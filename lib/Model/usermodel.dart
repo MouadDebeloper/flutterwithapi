@@ -1,20 +1,24 @@
+import 'package:flutter/material.dart';
+
 class UserModel{
 
-    String id="";    
-    String firstName="";
-    String lastName="";
+    final int id;    
+    final String firstName;
+    final String lastName;
    
-    UserModel(String id, String firstName, String lastName){
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-    
-      List<UserModel> userModelFromJson(var response){
+    const UserModel ({
+      required this.id,
+      required this.firstName,
+      required this.lastName,
+    });
 
-        
-        
-      
-    }
 
+
+     factory UserModel.fromJson(Map<String, dynamic> json){
+      return UserModel(
+        id : json['id'] as int,
+        firstName : json['firstName'] as String, 
+        lastName : json['lastName'] as String,
+      );
+     }
 }
