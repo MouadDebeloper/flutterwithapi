@@ -10,14 +10,15 @@ import 'package:http/http.dart' as http;
 
   // Fetch The users  
   late Future<UserModel> futureUsers;
-
-  Future<UserModel> fetchUser(String id) async {
-    print("the id is" + id);
+   UserModel selectedUser = const UserModel(id: 0, firstName: "", lastName: "");
+  getUser() async {
+    
     final response = await http.get(Uri.parse(ApiConstants.usersEndpoint));
     if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    return UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+       selectedUser =  UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -25,22 +26,7 @@ import 'package:http/http.dart' as http;
     }
   }
 
-   Widget getUser(String id){
-    futureUsers =  fetchUser(id);
-    return FutureBuilder<UserModel>(
-                        future: futureUsers,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(snapshot.data!.lastName + ' ' + snapshot.data!.firstName);
-                          } else if (snapshot.hasError) {
-                            return Text('${snapshot.error}');
-                          }
-                          // By default, show a loading spinner.
-                          return const CircularProgressIndicator();
-                        },
-              );
-  }
-
+    
 
 void main() {
   runApp(const MyApp());
@@ -100,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final myController = TextEditingController();
   String textd="dd";
-   
 
   @override
   void dispose() {
@@ -117,10 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-   
-    final ButtonStyle style =
-        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-     String retreivedUser='ddddddddddd';
+
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -145,28 +127,26 @@ class _MyHomePageState extends State<MyHomePage> {
                       border: UnderlineInputBorder(),
                       labelText: 'Enter the ID of the user',
                     ),
+                    keyboardType: TextInputType.number,
                   ),
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              style: style,
-              onPressed: () => {
-               // retreivedUser =  getUser(myController.text),
-              // setState(() { retreivedUser =  "change etat" ;}),
+            GestureDetector(
+              onTap: () async => {
                 setState(() {       
-                    // setstate using for the rerender the screen 
-                    // if we not use than it not show the sceond text
-                    textd = "WTFFFFFF";
+                  getUser();
                 })              
               },
               child: const Text('Enabled'),
             ),
             
-            const SizedBox(height:10),
-
+            const SizedBox(height:30),
+            
             Text(
-              textd
-              ),
+              selectedUser.toString(),
+              style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: Colors.red),
+
+            ),
             
             
             ],

@@ -21,4 +21,11 @@ class UserModel{
         lastName : json['lastName'] as String,
       );
      }
+
+  @override
+  String toString() {
+
+    return firstName + " " + this.lastName;
+
+  }
 }
