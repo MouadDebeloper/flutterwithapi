@@ -138,17 +138,15 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async => {
                 setState(() {       
                   getUser();
-                })              
+                }),            
               },
-              child: const Text('Enabled'),
+              child: const Text('Get User'),
             ),
             
-            const SizedBox(height:30),
-            
+            const SizedBox(height:40),
             Text(
               selectedUser.toString(),
               style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: Colors.red),
-
             ),
             
             
