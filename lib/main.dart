@@ -102,7 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-
+   
+    final ButtonStyle style =
+    ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -131,8 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
             ),
             const SizedBox(height: 30),
-            GestureDetector(
-              onTap: () async => {
+            ElevatedButton(
+              style: style,
+              onPressed: () async => {
                 setState(() {       
                   getUser();
                 })              
