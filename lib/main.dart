@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutterwithapi/Model/UserModel.dart';
@@ -7,8 +9,10 @@ import 'package:http/http.dart' as http;
 
 
   // Fetch The users  
+  late Future<UserModel> futureUsers;
 
-  Future<UserModel> fetchUsers() async {
+  Future<UserModel> fetchUser(String id) async {
+    print("the id is" + id);
     final response = await http.get(Uri.parse(ApiConstants.usersEndpoint));
     if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -17,8 +21,24 @@ import 'package:http/http.dart' as http;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load ');
     }
+  }
+
+   Widget getUser(String id){
+    futureUsers =  fetchUser(id);
+    return FutureBuilder<UserModel>(
+                        future: futureUsers,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(snapshot.data!.lastName + ' ' + snapshot.data!.firstName);
+                          } else if (snapshot.hasError) {
+                            return Text('${snapshot.error}');
+                          }
+                          // By default, show a loading spinner.
+                          return const CircularProgressIndicator();
+                        },
+              );
   }
 
 
@@ -78,13 +98,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  late Future<UserModel> futureUsers;
+  final myController = TextEditingController();
+  String textd="dd";
+   
 
   @override
-  void initState() {
-    super.initState();
-    futureUsers = fetchUsers();
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
   }
+  
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -93,6 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+   
+    final ButtonStyle style =
+        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+     String retreivedUser='ddddddddddd';
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -106,19 +134,43 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: FutureBuilder<UserModel>(
-                  future: futureUsers,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(snapshot.data!.lastName + ' ' +snapshot.data!.firstName);
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    }
-                    // By default, show a loading spinner.
-                    return const CircularProgressIndicator();
-                  },
-                ),
-                  
+        child:
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                    controller: myController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Enter the ID of the user',
+                    ),
+                  ),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              style: style,
+              onPressed: () => {
+               // retreivedUser =  getUser(myController.text),
+              // setState(() { retreivedUser =  "change etat" ;}),
+                setState(() {       
+                    // setstate using for the rerender the screen 
+                    // if we not use than it not show the sceond text
+                    textd = "WTFFFFFF";
+                })              
+              },
+              child: const Text('Enabled'),
+            ),
+            
+            const SizedBox(height:10),
+
+            Text(
+              textd
+              ),
+            
+            
+            ],
+          ),          
       ),
         // This trailing comma makes auto-formatting nicer for build methods.
     );
