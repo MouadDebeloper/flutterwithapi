@@ -11,9 +11,10 @@ import 'package:http/http.dart' as http;
   // Fetch The users  
   late Future<UserModel> futureUsers;
    UserModel selectedUser = const UserModel(id: 0, firstName: "", lastName: "");
-  getUser() async {
+  getUser(String name) async {
     
-    final response = await http.get(Uri.parse(ApiConstants.usersEndpoint));
+    final response = await http.get(Uri.parse("https://dummyjson.com/users/search?q=$id"));
+    
     if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -137,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: style,
               onPressed: () async => {
                 setState(() {       
-                  getUser();
+                  getUser(myController.text);
                 }),            
               },
               child: const Text('Get User'),
