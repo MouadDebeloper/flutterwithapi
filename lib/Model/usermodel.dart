@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class UserModel{
 
-    final int id;    
-    final String firstName;
-    final String lastName;
+    final Null id;    
+    final Null firstName;
+    final Null lastName;
    
     const UserModel ({
       required this.id,
@@ -16,16 +16,10 @@ class UserModel{
   
      factory UserModel.fromJson(Map<String, dynamic> json){
       return UserModel(
-        id : json['id'] as int,
-        firstName : json['firstName'] as String, 
-        lastName : json['lastName'] as String,
+        id : json['id'],
+        firstName : json['firstName'] ,
+        lastName : json['lastName'] ,
       );
      }
 
-  @override
-  String toString() {
-
-    return firstName + " " + this.lastName;
-
-  }
 }

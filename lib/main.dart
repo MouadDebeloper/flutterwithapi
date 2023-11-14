@@ -10,15 +10,14 @@ import 'package:http/http.dart' as http;
 
   // Fetch The users  
   late Future<UserModel> futureUsers;
-   UserModel selectedUser = const UserModel(id: 0, firstName: "", lastName: "");
-  getUser(String name) async {
+Future<UserModel> getUser(String name) async {
     
-    final response = await http.get(Uri.parse("https://dummyjson.com/users/search?q=$id"));
-    
+    final response = await http.get(Uri.parse("https://dummyjson.com/users/search?q=$name"));
+
     if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-       selectedUser =  UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+       return  UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
 
     } else {
       // If the server did not return a 200 OK response,
@@ -86,7 +85,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   final myController = TextEditingController();
-  String textd="dd";
+  late Future<UserModel> users; 
 
   @override
   void dispose() {
@@ -103,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-   
+
     final ButtonStyle style =
     ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
     return Scaffold(
@@ -128,9 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller: myController,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
-                      labelText: 'Enter the ID of the user',
+                      labelText: 'Enter the Name of the user',
                     ),
-                    keyboardType: TextInputType.number,
                   ),
             ),
             const SizedBox(height: 30),
@@ -138,18 +136,27 @@ class _MyHomePageState extends State<MyHomePage> {
               style: style,
               onPressed: () async => {
                 setState(() {       
-                  getUser(myController.text);
+                  users = getUser(myController.text);
+                  FutureBuilder<UserModel>(
+                        future: users,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(snapshot.data!.firstName);
+                          } else if (snapshot.hasError) {
+                            return Text('${snapshot.error}');
+                          }
+
+                          // By default, show a loading spinner.
+                          return const CircularProgressIndicator();
+                        },
+                      );
                 }),            
               },
               child: const Text('Get User'),
             ),
             
-            const SizedBox(height:40),
-            Text(
-              selectedUser.toString(),
-              style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: Colors.red),
-            ),
-            
+            const SizedBox(height:40)
+             
             
             ],
           ),          
