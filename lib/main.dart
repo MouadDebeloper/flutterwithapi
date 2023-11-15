@@ -1,19 +1,17 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutterwithapi/Model/UserModel.dart';
-import 'package:flutterwithapi/constants.dart';
 import 'package:http/http.dart' as http;
 
 
   // Fetch The users  
   late Future<UserModel> futureUsers;
 Future<UserModel> getUser(String name) async {
-    
     final response = await http.get(Uri.parse("https://dummyjson.com/users/search?q=$name"));
-
+    
     if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -86,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final myController = TextEditingController();
   late Future<UserModel> users; 
-
+   UserModel userinfos =  UserModel(id: 0,firstName: "test",lastName:"test");
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -105,63 +103,69 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final ButtonStyle style =
     ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child:
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                    controller: myController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'Enter the Name of the user',
+    return Center(
+      child: Scaffold(
+        appBar: AppBar(
+          // TRY THIS: Try changing the color here to a specific color (to
+          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+          // change color while the other colors stay the same.
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+        ),
+        body: Center(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child:
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                      controller: myController,
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Enter the Name of the user',
+                      ),
                     ),
-                  ),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              style: style,
-              onPressed: () async => {
-                setState(() {       
-                  users = getUser(myController.text);
-                  FutureBuilder<UserModel>(
-                        future: users,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(snapshot.data!.firstName);
-                          } else if (snapshot.hasError) {
-                            return Text('${snapshot.error}');
-                          }
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                style: style,
+                onPressed: ()  => {
+                  setState(() {      
+                    users = getUser(myController.text);
+                    FutureBuilder<UserModel>(
+                          future: users,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              print(snapshot.data!.firstName);
+                              userinfos.firstName = snapshot.data!.firstName;
+                              userinfos.lastName = snapshot.data!.lastName;
+                              Text(userinfos.toString());
 
-                          // By default, show a loading spinner.
-                          return const CircularProgressIndicator();
-                        },
-                      );
-                }),            
-              },
-              child: const Text('Get User'),
-            ),
-            
-            const SizedBox(height:40)
-             
-            
-            ],
-          ),          
+                            } else if (snapshot.hasError) {
+                              return Text('${snapshot.error}');
+                            }
+    
+                            // By default, show a loading spinner.
+                            return const CircularProgressIndicator();
+                          },
+                        );
+                  }),            
+                },
+                child:  Text("Get User"),
+              ),
+              
+              const SizedBox(height:40),
+               
+               Text(userinfos.toString()),
+              ],
+            ),          
+        ),
+          // This trailing comma makes auto-formatting nicer for build methods.
       ),
-        // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
