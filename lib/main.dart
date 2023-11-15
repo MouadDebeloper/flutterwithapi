@@ -135,16 +135,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: style,
                 onPressed: ()  => {
                   setState(() {      
+                    
                     users = getUser(myController.text);
+
                     FutureBuilder<UserModel>(
                           future: users,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              print(snapshot.data!.firstName);
                               userinfos.firstName = snapshot.data!.firstName;
                               userinfos.lastName = snapshot.data!.lastName;
                               Text(userinfos.toString());
-
                             } else if (snapshot.hasError) {
                               return Text('${snapshot.error}');
                             }
